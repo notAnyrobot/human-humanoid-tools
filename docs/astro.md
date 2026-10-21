@@ -1,6 +1,7 @@
 # Astro P2 in this fork
 
-This fork keeps HHTools code and the canonical Astro robot bundle together.
+The `develop` branch keeps HHTools code and the canonical Astro robot bundle together.
+The fork's `main` branch mirrors upstream; keep custom commits on `develop`.
 Edit and commit `configs/robots/astro_p2_29dof/` directly; no separate asset
 repository, generation step, or robot-library environment override is needed.
 
@@ -19,24 +20,37 @@ order is pinned in `robot.yaml`; no calibration is bundled.
 ## Use on each device
 
 ```bash
-git clone https://github.com/notAnyrobot/human-humanoid-tools.git
+git clone --branch develop https://github.com/notAnyrobot/human-humanoid-tools.git
 cd human-humanoid-tools
+unset HHTOOLS_ROBOT_DIR HHTOOLS_ROBOT_PATH
 uv sync --locked --extra all
+uv run python scripts/install_builtin_robots.py
+cp -a configs/robots/astro_p2_29dof ~/.config/hhtools/robots/
 uv run hhtools robot validate astro_p2_29dof
 uv run hhtools web
 ```
 
-If this shell previously sourced the Menagerie X environment script, remove
-those overrides first:
+The commands above use the default Linux user Robot Library. Remove old
+robot-library overrides before installing. The copy command is for a fresh
+installation; back up an existing Astro directory before reinstalling it.
 
-```bash
-unset HHTOOLS_ROBOT_DIR HHTOOLS_ROBOT_PATH
+All seven runtime bundles live together:
+
+```text
+~/.config/hhtools/robots/
+├── astro_p2_29dof/
+├── g1_29dof/
+├── roboto_origin/
+├── agibot_x2_ultra/
+├── asimov_1/
+├── fourier_gr2/
+└── berkeley_humanoid_lite/
 ```
 
-The checkout's `configs/robots` directory is discovered automatically by
-WebUI/CLI and by MCP as `workspace-robots`. The default user Robot Library
-remains available for official HHTools robots. Do not keep another same-named
-Astro preset in the user library or additional discovery roots.
+The installed Astro copy takes precedence over the same-named workspace preset.
+MCP discovers it under `robot-library`. The fork keeps the canonical copy under
+`configs/robots/astro_p2_29dof` so it can be installed on another device. No robot
+library environment override is needed.
 
 For MCP, use this checkout's `.codex/config.toml` and reconnect after changing
 the checkout or launch configuration. Ensure the MCP working directory is
@@ -45,9 +59,12 @@ The stdio server owns its runtime; its WebUI URL is only a fallback link.
 
 ## Synchronize
 
-Commit robot YAML, URDF, meshes and reviewed calibration changes to this fork
-and pull them on the other devices. Keep datasets, outputs and caches outside
-Git. Record the repository revision and dataset version for each run.
+Commit robot YAML, URDF, meshes and reviewed calibration changes on `develop`
+and pull that branch on the other devices. If you edit the installed Astro copy,
+copy the reviewed changes back to `configs/robots/astro_p2_29dof` before committing.
+After pulling changes, update each device's installed copy, preserving any local
+calibration you still need. Keep datasets, outputs and caches outside Git.
+Record the repository revision and dataset version for each run.
 
 HHTools can save calibration under the user library, especially for Agent
 calibration overlays. Such files are not synchronized by this fork until they
@@ -75,8 +92,13 @@ Keep `origin` pointing to this fork and `upstream` pointing to Roboparty:
 ```bash
 git remote add upstream https://github.com/Roboparty/human-humanoid-tools.git
 git fetch upstream
-git merge upstream/main
+git switch main
+git merge --ff-only upstream/main
 git push origin main
+git switch develop
+git merge main
+git push origin develop
 ```
 
-Add `upstream` only once per clone. Resolve any merge conflicts before pushing.
+Add `upstream` only once per clone. Keep `main` free of custom commits. Resolve
+any conflicts on `develop` before pushing.
