@@ -1,5 +1,8 @@
 # human-humanoid-tools (hhtools)
 
+This fork includes **Astro P2 29 DOF** under `configs/robots/astro_p2_29dof/`.
+See [Astro setup and synchronization](docs/astro.md) for the workflow across devices.
+
 **Retarget parkour, dance, and interaction clips onto any humanoid in ~30 seconds**
 
 **[Project page](https://roboparty.github.io/human-humanoid-tools/)** · **[中文说明](README_cn.md)**

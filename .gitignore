@@ -176,7 +176,7 @@ assets/processed_npz/
 assets/save_npz/
 assets/retargeted/
 
-# Robot presets: only ship the contributor template + Unitree G1 (URDF,
+# Robot presets: ship Astro P2 in this fork, the contributor template + Unitree G1 (URDF,
 # meshes, robot.yaml, calibration).  Other presets and Web uploads live under
 # ~/.config/hhtools/robots/ and stay untracked here.
 configs/robots/*
@@ -184,6 +184,8 @@ configs/robots/*
 !configs/robots/_template/**
 !configs/robots/unitree_g1/
 !configs/robots/unitree_g1/**
+!configs/robots/astro_p2_29dof/
+!configs/robots/astro_p2_29dof/**
 
 # Large assets (use git-lfs if you need them tracked)
 *.mp4
